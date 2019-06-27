@@ -43,6 +43,11 @@ int main(int argc, char *argv[])
   returned = normaliseWord(test);
   printf("Returned Name: %s\n", returned);
 
+  char * wtf = "HEY;";
+  printf("Test: %s\n", wtf);
+  returned = normaliseWord(wtf);
+  printf("Returned Name: %s\n", returned);
+
   rewind(ff);
   int num_of_words = 0;
   while(fscanf(ff, "%s", test) == 1){
