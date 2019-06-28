@@ -37,6 +37,12 @@ char * normaliseWord(char *str);
 InvertedIndexBST * generateInvertedIndex(char *collectionFilename);
 void printInvertedIndex(InvertedIndexBST tree);
 
+InvertedIndexBST newBSTNode(char *inputword);
+InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
+InvertedIndexBST newBSTree();
+int BSTreeNumNodes(InvertedIndexBST t);
+void showBSTreeNode(InvertedIndexBST t);
+
 // Functions for Part-2
 double calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D);
 TfIdfList retrieve(InvertedIndexBST tree, char* searchWords[] , int D);

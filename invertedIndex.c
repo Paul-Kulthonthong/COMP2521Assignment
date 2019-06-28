@@ -6,6 +6,11 @@
 
 #include "invertedIndex.h"
 
+InvertedIndexBST newBSTNode(char *inputword);
+InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
+InvertedIndexBST newBSTree();
+int BSTreeNumNodes(InvertedIndexBST t);
+void showBSTreeNode(InvertedIndexBST t);
 
 char * normaliseWord(char *tobenormalised){
   char buf[100] = "";
@@ -30,11 +35,60 @@ char * normaliseWord(char *tobenormalised){
 }
 
 
-
 //InvertedIndexBST * generateInvertedIndex(char *collectionFilename){
-
-  //return new_inverted_index_node;
+//
+//  return new_inverted_index_node;
 //}
+
+InvertedIndexBST newBSTree()
+{
+	return NULL;
+}
+
+InvertedIndexBST newBSTNode(char *inputword)
+{
+	InvertedIndexBST new = malloc(sizeof(struct InvertedIndexNode));
+	assert(new != NULL);
+	new->word = inputword;
+//  printf("malloced word: %s\n", new->word);
+	new->left = new->right = NULL;
+  new->fileList = NULL;
+	return new;
+}
+
+InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword)
+{
+
+	if (t == NULL){
+		return newBSTNode(inputword);
+  }
+	else if (strcmp(inputword, t->word) < 0){
+    printf("here to the left");
+    t->left = BSTreeInsert(t->left, inputword);
+  }
+	else if (strcmp(inputword, t->word) > 0){
+    printf("here to the right");
+		t->right = BSTreeInsert(t->right, inputword);
+  }
+	else; // (strcmp(inputword, t->word) == 0)
+		// don't insert duplicates */
+	return t;
+}
+
+int BSTreeNumNodes(InvertedIndexBST t)
+{
+	if (t == NULL)
+		return 0;
+	else
+		return 1 + BSTreeNumNodes(t->left)
+	             + BSTreeNumNodes(t->right);
+}
+
+void showBSTreeNode(InvertedIndexBST t)
+{
+	if (t == NULL) return;
+	printf("%s\n", t->word);
+}
 
 
 
