@@ -17,38 +17,35 @@ void showBSTreeNode(InvertedIndexBST t);
 char * getfiledir(char * collectionFilename, char *filename);
 
 char * normaliseWord(char *tobenormalised){
-  char buf[MAX] = "";
   int i = 0;
   while( tobenormalised[i] ) {
-      buf[i] = tolower(tobenormalised[i]);
+      tobenormalised[i] = tolower(tobenormalised[i]);
+      printf("i(%d): %c\n", i, tobenormalised[i]);
       i++;
   }
-//  printf("This is size of buf: %lu\n", sizeof(buf));
-  char test[i+1];
-  strcpy(test, buf);
-//  printf("This is size of norm: %lu\n", sizeof(test));
-//  printf("This is word: %s\n", test);
-  printf("This is i and word last letter: %d & %c\n", i, test[i-1]);
+  //char test[i+1];
+//  strcpy(test, tobenormalised);
+  printf("This is i and word last letter: %d & %c\n", i-1, tobenormalised[i-1]);
 
-  if(test[i-1] == '.'|| test[i-1] == ',' || test[i-1] == ';' || test[i-1] == '?'){
-    test[i-1] = '\0';
+  if(tobenormalised[i-1] == '.'|| tobenormalised[i-1] == ',' || tobenormalised[i-1] == ';' || tobenormalised[i-1] == '?'){
+    tobenormalised[i-1] = '\0';
   }
-
-  char * normalised = strdup(test);
-  return normalised;
+  printf("This is normalised? [%s] + strlen[%lu] + memory[%lu]\n", tobenormalised, strlen(tobenormalised), sizeof(tobenormalised));
+  //char * normalised = strdup(test);
+  return tobenormalised;
 }
 
 
-InvertedIndexBST * generateInvertedIndex(char *collectionFilename){
+InvertedIndexBST generateInvertedIndex(char *collectionFilename){
 
-  InvertedIndexBST * returnvalue = malloc(sizeof(InvertedIndexBST));
-  *returnvalue = newBSTree();
+  InvertedIndexBST newtree = malloc(sizeof(InvertedIndexBST));
+  newtree = newBSTree();
   FILE *f;
   char filestemp[MAX];
 
   if ((f = fopen(collectionFilename,"r")) == NULL) {
   		fprintf(stderr, "Can't open file %s\n", collectionFilename);
-  		return returnvalue; // ASK ABOUT EXIT FAILURE
+  		return newtree; // ASK ABOUT EXIT FAILURE
 	}
   fscanf(f, "%s", filestemp);
   printf("This is the first file: %s\n", filestemp);
@@ -58,13 +55,13 @@ InvertedIndexBST * generateInvertedIndex(char *collectionFilename){
 
 
   char * wtf = "HEYAAAA";
-  *returnvalue = BSTreeInsert(*returnvalue, wtf);
+  newtree = BSTreeInsert(newtree, wtf);
   char * wtff = "IWANNACRY";
-  *returnvalue = BSTreeInsert(*returnvalue, wtff);
+  newtree = BSTreeInsert(newtree, wtff);
   printf("THIS IS FINAL TEST: ");
-	showBSTreeNode(*returnvalue);
-	printf("num of nodes: %d\n", BSTreeNumNodes(*returnvalue));
-  return returnvalue;
+	showBSTreeNode(newtree);
+	printf("num of nodes: %d\n", BSTreeNumNodes(newtree));
+  return newtree;
 }
 
 InvertedIndexBST newBSTree()
