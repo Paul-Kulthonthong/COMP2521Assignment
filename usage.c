@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
   rewind(ff);
   int num_of_words = 0;
   while(fscanf(ff, "%s", test) == 1){
+		printf("This is the words in the file: %s\n", test);
     num_of_words ++;
   }
   printf("Num: %d\n", num_of_words);
@@ -109,6 +110,19 @@ int main(int argc, char *argv[])
   showBSTreeNode(testTree);
   printf("num of nodes: %d\n", BSTreeNumNodes(testTree));
   printf("l l curr: %s\n", testTree->left->left->word);
+
+  testTree = BSTreeInsert(testTree, wtf);
+  showBSTreeNode(testTree);
+  printf("num of nodes: %d\n", BSTreeNumNodes(testTree));
+
+	fclose(ff);
+	fclose(f);
+
+	InvertedIndexBST * whatisreturn = generateInvertedIndex(fname);
+	printf("THIS IS FINAL TEST: ");
+	showBSTreeNode(*whatisreturn);
+	printf("num of nodes: %d\n", BSTreeNumNodes(*whatisreturn));
+	printf("\n");
 
 
 

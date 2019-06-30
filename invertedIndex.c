@@ -3,17 +3,21 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
+#include <libgen.h>
 
 #include "invertedIndex.h"
+
+#define MAX 100
 
 InvertedIndexBST newBSTNode(char *inputword);
 InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
 InvertedIndexBST newBSTree();
 int BSTreeNumNodes(InvertedIndexBST t);
 void showBSTreeNode(InvertedIndexBST t);
+char * getfiledir(char * collectionFilename, char *filename);
 
 char * normaliseWord(char *tobenormalised){
-  char buf[100] = "";
+  char buf[MAX] = "";
   int i = 0;
   while( tobenormalised[i] ) {
       buf[i] = tolower(tobenormalised[i]);
@@ -35,10 +39,33 @@ char * normaliseWord(char *tobenormalised){
 }
 
 
-//InvertedIndexBST * generateInvertedIndex(char *collectionFilename){
-//
-//  return new_inverted_index_node;
-//}
+InvertedIndexBST * generateInvertedIndex(char *collectionFilename){
+
+  InvertedIndexBST * returnvalue = malloc(sizeof(InvertedIndexBST));
+  *returnvalue = newBSTree();
+  FILE *f;
+  char filestemp[MAX];
+
+  if ((f = fopen(collectionFilename,"r")) == NULL) {
+  		fprintf(stderr, "Can't open file %s\n", collectionFilename);
+  		return returnvalue; // ASK ABOUT EXIT FAILURE
+	}
+  fscanf(f, "%s", filestemp);
+  printf("This is the first file: %s\n", filestemp);
+
+  char * filename  = getfiledir(collectionFilename, filestemp);
+  printf("from currfile[%s]\n", filename);
+
+
+  char * wtf = "HEYAAAA";
+  *returnvalue = BSTreeInsert(*returnvalue, wtf);
+  char * wtff = "IWANNACRY";
+  *returnvalue = BSTreeInsert(*returnvalue, wtff);
+  printf("THIS IS FINAL TEST: ");
+	showBSTreeNode(*returnvalue);
+	printf("num of nodes: %d\n", BSTreeNumNodes(*returnvalue));
+  return returnvalue;
+}
 
 InvertedIndexBST newBSTree()
 {
@@ -89,6 +116,29 @@ void showBSTreeNode(InvertedIndexBST t)
 	if (t == NULL) return;
 	printf("%s\n", t->word);
 }
+
+char * getfiledir(char * collectionFilename, char *filename){
+  char currfile[MAX]= "\0";
+  char* dir = dirname(collectionFilename);
+
+  strcat(currfile, dir);
+  strcat(currfile, "/");
+  strcat(currfile, filename);
+
+  char * filedir = strdup(currfile);
+  return filedir;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

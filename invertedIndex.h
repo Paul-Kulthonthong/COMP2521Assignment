@@ -25,7 +25,7 @@ typedef struct InvertedIndexNode *InvertedIndexBST;
 
 struct TfIdfNode {
     char *filename;
-	double tfidf;    // tfidf value
+	double tfidf_sum;    // tfidf sum value
 	struct TfIdfNode *next;
 };
 typedef struct TfIdfNode *TfIdfList;
