@@ -42,6 +42,7 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   newtree = newBSTree();
   FILE *f;
   char filestemp[MAX];
+  //char infileword[MAX];
 
   if ((f = fopen(collectionFilename,"r")) == NULL) {
   		fprintf(stderr, "Can't open file %s\n", collectionFilename);
@@ -52,6 +53,8 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
 
   char * filename  = getfiledir(collectionFilename, filestemp);
   printf("from currfile[%s]\n", filename);
+
+
 
 
   char * wtf = "HEYAAAA";
