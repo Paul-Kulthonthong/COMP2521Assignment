@@ -59,6 +59,7 @@ InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
 InvertedIndexBST newBSTree();
 int BSTreeNumNodes(InvertedIndexBST t);
 void showBSTreeNode(InvertedIndexBST t);
+InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword);
 
 // Functions for Part-2
 
