@@ -56,43 +56,36 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   		fprintf(stderr, "Can't open file %s\n", collectionFilename);
   		return newtree; // ASK ABOUT EXIT FAILURE
 	}
-  fscanf(f, "%s", filestemp);
-  printf("This is the first file: %s\n", filestemp);
+//  fscanf(f, "%s", filestemp);
+  while(fscanf(f, "%s", filestemp) != EOF){
+  //  printf("This is the file: %s\n", filestemp);
 
-  char * filename  = getfiledir(collectionFilename, filestemp);
-  printf("from currfile[%s]\n", filename);
+    char * filename  = getfiledir(collectionFilename, filestemp);
+    printf("from currfile[%s]\n", filename);
 
-
-  if ((ff = fopen(filename,"r")) == NULL) {
-  		fprintf(stderr, "Can't open file %s\n", filename);
-  		return newtree;
-	}
-  rewind(ff);
-  int num_of_words = 0;
-  while(fscanf(ff, "%s", infileword) != EOF){
-    char* returned = strdup(normaliseWord(infileword));
-		printf("This is the words in the file that has been normalised: [%s]\n", returned);
-    newtree = BSTreeInsert(newtree, returned);
-    num_of_words ++;
+    if ((ff = fopen(filename,"r")) == NULL) {
+    		fprintf(stderr, "Can't open file %s\n", filename);
+    		return newtree;
+  	}
+    rewind(ff);
+    int num_of_words = 0;
+    while(fscanf(ff, "%s", infileword) != EOF){
+      char* returned = strdup(normaliseWord(infileword));
+  		//printf("This is the words in the file that has been normalised: [%s]\n", returned);
+      newtree = BSTreeInsert(newtree, returned);
+      num_of_words ++;
+    }
+    fclose(ff);
   }
-  printf("Number of words: %d\n", num_of_words);
+
+  fclose(f);
+
+
   printf("Num of nodes using loop: %d\n", BSTreeNumNodes(newtree));
   printf("Infix:");
-  BSTreeInfix(newtree);
-  printf("Prefix:");
-  BSTreePrefix(newtree);
-  printf("Postfix:");
-  BSTreePostfix(newtree);
-  /*char * wtf = "HEYA";
-  char *returned = normaliseWord(wtf);
-  newtree = BSTreeInsert(newtree, returned);
-  showBSTreeNode(newtree);
-  printf("num of nodes: %d\n", BSTreeNumNodes(newtree));
-  char * wtff = "IWANNACRY";
-  newtree = BSTreeInsert(newtree, wtff);
-  printf("THIS IS FINAL TEST: ");
-	showBSTreeNode(newtree);
-	printf("num of nodes: %d\n", BSTreeNumNodes(newtree));*/
+//  BSTreeInfix(newtree);
+  printInvertedIndex(newtree);
+
   return newtree;
 }
 
@@ -119,11 +112,11 @@ InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword)
 		return newBSTNode(inputword);
   }
 	else if (strcmp(inputword, t->word) < 0){
-    printf("here to the left");
+    //printf("here to the left");
     t->left = BSTreeInsert(t->left, inputword);
   }
 	else if (strcmp(inputword, t->word) > 0){
-    printf("here to the right");
+    //printf("here to the right");
 		t->right = BSTreeInsert(t->right, inputword);
   }
 	else; // (strcmp(inputword, t->word) == 0)
@@ -162,7 +155,6 @@ void BSTreePrefix(InvertedIndexBST t)
 	BSTreePrefix(t->right);
 }
 
-// print values in postfix order
 void BSTreePostfix(InvertedIndexBST t)
 {
 	if (t == NULL) return;
@@ -183,21 +175,11 @@ char * getfiledir(char * collectionFilename, char *filename){
   return filedir;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void printInvertedIndex(InvertedIndexBST tree){
-
+  if (tree == NULL) return;
+	printInvertedIndex(tree->left);
+	showBSTreeNode(tree);
+  printf("Something list link\n");
+	printInvertedIndex(tree->right);
   return;
 }
