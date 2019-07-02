@@ -14,7 +14,7 @@ InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
 InvertedIndexBST newBSTree();
 int BSTreeNumNodes(InvertedIndexBST t);
 void showBSTreeNode(InvertedIndexBST t);
-char * getfiledir(char * collectionFilename, char *filename);
+char * getfiledir(char * dir, char *filename);
 void BSTreeInfix(InvertedIndexBST t);
 void BSTreePrefix(InvertedIndexBST t);
 void BSTreePostfix(InvertedIndexBST t);
@@ -55,11 +55,13 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   		return newtree; // ASK ABOUT EXIT FAILURE
 	}
 //  fscanf(f, "%s", filestemp);
+  char* dir = dirname(collectionFilename);
+  //printf("This dir: [%s]\n", dir);
   while(fscanf(f, "%s", filestemp) != EOF){
   //  printf("This is the file: %s\n", filestemp);
 
-    char * filename  = getfiledir(collectionFilename, filestemp);
-  //  printf("from currfile[%s]\n", filename);
+    char * filename  = getfiledir(dir, filestemp);
+    printf("from currfile[%s]\n", filename);
 
     if ((ff = fopen(filename,"r")) == NULL) {
     		fprintf(stderr, "Can't open file %s\n", filename);
@@ -269,16 +271,16 @@ void BSTreePostfix(InvertedIndexBST t)
 	showBSTreeNode(t);
 }
 
-char * getfiledir(char * collectionFilename, char *filename)
+char * getfiledir(char * dir, char *filename)
 {
   char currfile[MAX]= "\0";
-  char* dir = dirname(collectionFilename);
-
+  printf("This is dir: [%s]\n", dir);
   strcat(currfile, dir);
   strcat(currfile, "/");
   strcat(currfile, filename);
 
   char * filedir = strdup(currfile);
+  printf("This is filedir[%s]\n", filedir);
   return filedir;
 }
 
