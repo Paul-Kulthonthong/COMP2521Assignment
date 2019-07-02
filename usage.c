@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
   strcpy(fname,argv[1]);
-
+  char *collectionfile = strdup(fname);
+    
 
 	InvertedIndexBST whatisreturn = generateInvertedIndex(fname);
 	printf("\nOUTSIDE NOW\n\n");
@@ -29,8 +30,8 @@ int main(int argc, char *argv[])
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));
 	InvertedIndexBST findingnemo = BSTreeFind(whatisreturn, "moon");
 	printf("found nemo? [%s]\n", findingnemo->word);
-	printf("num of docs: [%d]\n", numofdocuments(fname));
-	TfIdfList testtdf = calculateTfIdf(whatisreturn, "volcano", numofdocuments(fname));
+	printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
+	TfIdfList testtdf = calculateTfIdf(whatisreturn, "mars", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
 
   return 0;
