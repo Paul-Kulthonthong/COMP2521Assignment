@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	InvertedIndexBST findingnemo = BSTreeFind(whatisreturn, "moon");
 	printf("found nemo? [%s]\n", findingnemo->word);
 	printf("num of docs: [%d]\n", numofdocuments(fname));
-	TfIdfList testtdf = calculateTfIdf(whatisreturn, "mars", numofdocuments(fname));
+	TfIdfList testtdf = calculateTfIdf(whatisreturn, "volcano", numofdocuments(fname));
 	printTfIdf(testtdf);
 
   return 0;

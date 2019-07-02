@@ -54,14 +54,10 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename);
 void printInvertedIndex(InvertedIndexBST tree);
 
 
-InvertedIndexBST newBSTNode(char *inputword);
-InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
-InvertedIndexBST newBSTree();
 int BSTreeNumNodes(InvertedIndexBST t);
 void showBSTreeNode(InvertedIndexBST t);
 InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword);
 int numofdocuments(char *collectionFilename);
-TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D);
 void printTfIdf(TfIdfList t);
 
 // Functions for Part-2

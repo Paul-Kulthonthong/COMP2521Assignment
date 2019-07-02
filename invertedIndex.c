@@ -31,8 +31,9 @@ void fileNodeInsert(InvertedIndexBST indexWordNode, FileList fileNode);
 int numofdocuments(char *collectionFilename);
 TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D);
 TfIdfList newTfIdfNode(char *file);
-TfIdfList addTfIdfNode(TfIdfList addonto, char *file);
+TfIdfList addsingleTfIdfNode(TfIdfList addonto, char *file, double tf, int D, int numoffiles);
 void printTfIdf(TfIdfList t);
+double calcsingleTfIdfsum(double tf, int D, double numoffiles);
 
 
 
@@ -320,12 +321,12 @@ int numofdocuments(char *collectionFilename){
 TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D){
   InvertedIndexBST wordNode = BSTreeFind(tree, searchWord);
   FileList itterativecounter = wordNode->fileList;
-  int count = 0;
+  double count = 0;
   while(itterativecounter!=NULL){
       count++;
       itterativecounter = itterativecounter->next;
   }
-  printf("IT is within: [%d] files\n",count);
+  printf("IT is within: [%f] files\n",count);
 
   if(wordNode == NULL){
     return NULL;
@@ -334,41 +335,69 @@ TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D){
     TfIdfList returnvalue = NULL;
     FileList increment = wordNode->fileList;
     while(increment != NULL){
-      returnvalue = addTfIdfNode(returnvalue, increment->filename);
+      returnvalue = addsingleTfIdfNode(returnvalue, increment->filename, increment->tf, D, count);
       increment = increment->next;
     }
     return returnvalue;
   }
 }
 
-TfIdfList addTfIdfNode(TfIdfList addonto, char *file){
+TfIdfList addsingleTfIdfNode(TfIdfList addonto, char *file, double tf, int D, int numoffiles){
 
   TfIdfList newtfidfnode = newTfIdfNode(file);
   TfIdfList itterativepointer = addonto;
+  newtfidfnode->tfidf_sum = calcsingleTfIdfsum(tf, D, numoffiles);
 
   if(itterativepointer == NULL){
     addonto = newtfidfnode;
   }
   else{
-    while(itterativepointer->next != NULL){
-      itterativepointer = itterativepointer->next;
+    if (newtfidfnode->tfidf_sum>itterativepointer->tfidf_sum) {
+      newtfidfnode->next = itterativepointer;
+      addonto = newtfidfnode;
+      return addonto;
     }
-    itterativepointer->next = newtfidfnode;
+    else{
+      while(newtfidfnode->tfidf_sum<itterativepointer->tfidf_sum){
+        if(itterativepointer->next == NULL){
+          itterativepointer->next = newtfidfnode;
+          return addonto;
+        }
+        else if(newtfidfnode->tfidf_sum>itterativepointer->next->tfidf_sum){
+          break;
+        }
+        else if(newtfidfnode->tfidf_sum==itterativepointer->next->tfidf_sum){
+          if(strcmp(itterativepointer->next->filename,  newtfidfnode->filename) > 0){
+            break;
+          }
+          else{
+            newtfidfnode->next = itterativepointer->next->next;
+            itterativepointer->next->next = newtfidfnode;
+            return addonto;
+          }
+        }
+        else{
+          itterativepointer = itterativepointer->next;
+        }
+      }
+      newtfidfnode->next = itterativepointer->next;
+      itterativepointer->next = newtfidfnode;
+      return addonto;
+    }
   }
-
-
   return addonto;
 
 }
 
-/*
-double calcTfIdfsum(double tf, TfIdfList tdflist, char *searchWord, int D){
-  double tfidfsum = 0;
-  double tfidfum = log(/D)
 
+double calcsingleTfIdfsum(double tf, int D, double numoffiles){
+  double tfidfsum = 0;
+  //printf("this is the numoffiles & d: [%f & %d]\n", numoffiles, D);
+  tfidfsum = tf*log10(D/numoffiles);
+//  printf("this is the tfidfsum: [%f]\n", tfidfsum);
   return tfidfsum;
 }
-*/
+
 
 void printTfIdf(TfIdfList t){
   printf("PrintingTfIdf: ");
