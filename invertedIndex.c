@@ -394,7 +394,8 @@ double calcsingleTfIdfsum(double tf, int D, double numoffiles){
   double tfidfsum = 0;
   //printf("this is the numoffiles & d: [%f & %d]\n", numoffiles, D);
   tfidfsum = tf*log10(D/numoffiles);
-//  printf("this is the tfidfsum: [%f]\n", tfidfsum);
+  
+  //printf("this is the tfidfsum: [%f]\n", tfidfsum);
   return tfidfsum;
 }
 
