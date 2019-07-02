@@ -29,6 +29,9 @@ int main(int argc, char *argv[])
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));
 	InvertedIndexBST findingnemo = BSTreeFind(whatisreturn, "moon");
 	printf("found nemo? [%s]\n", findingnemo->word);
+	printf("num of docs: [%d]\n", numofdocuments(fname));
+	TfIdfList testtdf = calculateTfIdf(whatisreturn, "mars", numofdocuments(fname));
+	printTfIdf(testtdf);
 
   return 0;
 }

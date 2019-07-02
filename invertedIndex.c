@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <libgen.h>
+#include <math.h>
 
 #include "invertedIndex.h"
 
@@ -20,13 +21,20 @@ void BSTreePrefix(InvertedIndexBST t);
 void BSTreePostfix(InvertedIndexBST t);
 void showBSTreeNodeandList(InvertedIndexBST t);
 InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword);
-void fileNodeInsert(InvertedIndexBST indexWordNode, FileList fileNode);
-
 
 FileList newFileNode(char *inputfile);
 void addFileNode(InvertedIndexBST indexWordNode, FileList fileNode);
 int fileNodeExist(InvertedIndexBST t, char *inputfile);
 double calculatetf(char *file, char *word);
+void fileNodeInsert(InvertedIndexBST indexWordNode, FileList fileNode);
+
+int numofdocuments(char *collectionFilename);
+TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D);
+TfIdfList newTfIdfNode(char *file);
+TfIdfList addTfIdfNode(TfIdfList addonto, char *file);
+void printTfIdf(TfIdfList t);
+
+
 
 char * normaliseWord(char *tobenormalised){
   int i = 0;
@@ -61,7 +69,7 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   //  printf("This is the file: %s\n", filestemp);
 
     char * filename  = getfiledir(dir, filestemp);
-    printf("from currfile[%s]\n", filename);
+  //  printf("from currfile[%s]\n", filename);
 
     if ((ff = fopen(filename,"r")) == NULL) {
     		fprintf(stderr, "Can't open file %s\n", filename);
@@ -274,13 +282,13 @@ void BSTreePostfix(InvertedIndexBST t)
 char * getfiledir(char * dir, char *filename)
 {
   char currfile[MAX]= "\0";
-  printf("This is dir: [%s]\n", dir);
+  //printf("This is dir: [%s]\n", dir);
   strcat(currfile, dir);
   strcat(currfile, "/");
   strcat(currfile, filename);
 
   char * filedir = strdup(currfile);
-  printf("This is filedir[%s]\n", filedir);
+//  printf("This is filedir[%s]\n", filedir);
   return filedir;
 }
 
@@ -291,4 +299,92 @@ void printInvertedIndex(InvertedIndexBST tree)
 	showBSTreeNodeandList(tree);
 	printInvertedIndex(tree->right);
   return;
+}
+
+int numofdocuments(char *collectionFilename){
+  FILE *f;
+  char temp[MAX];
+  int num_of_docs = 0;
+  if ((f = fopen(collectionFilename,"r")) == NULL) {
+  		fprintf(stderr, "Can't open file %s\n", collectionFilename);
+  		return EXIT_FAILURE; // ASK ABOUT EXIT FAILURE
+	}
+  while(fscanf(f, "%s", temp) != EOF){
+    num_of_docs++;
+  }
+  fclose(f);
+  return num_of_docs;
+}
+
+
+TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D){
+  InvertedIndexBST wordNode = BSTreeFind(tree, searchWord);
+  FileList itterativecounter = wordNode->fileList;
+  int count = 0;
+  while(itterativecounter!=NULL){
+      count++;
+      itterativecounter = itterativecounter->next;
+  }
+  printf("IT is within: [%d] files\n",count);
+
+  if(wordNode == NULL){
+    return NULL;
+  }
+  else{
+    TfIdfList returnvalue = NULL;
+    FileList increment = wordNode->fileList;
+    while(increment != NULL){
+      returnvalue = addTfIdfNode(returnvalue, increment->filename);
+      increment = increment->next;
+    }
+    return returnvalue;
+  }
+}
+
+TfIdfList addTfIdfNode(TfIdfList addonto, char *file){
+
+  TfIdfList newtfidfnode = newTfIdfNode(file);
+  TfIdfList itterativepointer = addonto;
+
+  if(itterativepointer == NULL){
+    addonto = newtfidfnode;
+  }
+  else{
+    while(itterativepointer->next != NULL){
+      itterativepointer = itterativepointer->next;
+    }
+    itterativepointer->next = newtfidfnode;
+  }
+
+
+  return addonto;
+
+}
+
+/*
+double calcTfIdfsum(double tf, TfIdfList tdflist, char *searchWord, int D){
+  double tfidfsum = 0;
+  double tfidfum = log(/D)
+
+  return tfidfsum;
+}
+*/
+
+void printTfIdf(TfIdfList t){
+  printf("PrintingTfIdf: ");
+  while(t != NULL){
+    printf("%s [tdidf: %f] ",t->filename, t->tfidf_sum);
+    t = t->next;
+  }
+  printf("\n");
+}
+
+TfIdfList newTfIdfNode(char *file)
+{
+	TfIdfList new = malloc(sizeof(struct TfIdfNode));
+	assert(new != NULL);
+  new->filename = strdup(file);
+  new->tfidf_sum = 0; // CREATE TF CALCULATION FILE
+  new->next = NULL;
+  return new;
 }
