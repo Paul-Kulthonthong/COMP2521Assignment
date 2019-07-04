@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   char *collectionfile = strdup(fname);
 
 
-	InvertedIndexBST whatisreturn = generateInvertedIndex(fname);
+	InvertedIndexBST whatisreturn = generateInvertedIndex(collectionfile);
 	printf("\nOUTSIDE NOW\n\n");
 	printInvertedIndex(whatisreturn);
 
