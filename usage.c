@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	}
   strcpy(fname,argv[1]);
   char *collectionfile = strdup(fname);
-
+    printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
 
 	InvertedIndexBST whatisreturn = generateInvertedIndex(collectionfile);
 	printf("\nOUTSIDE NOW\n\n");
@@ -31,8 +31,10 @@ int main(int argc, char *argv[])
 	InvertedIndexBST findingnemo = BSTreeFind(whatisreturn, "moon");
 	printf("found nemo? [%s]\n", findingnemo->word);
 	printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
-	TfIdfList testtdf = calculateTfIdf(whatisreturn, "mars", numofdocuments(collectionfile));
+	TfIdfList testtdf = calculateTfIdf(whatisreturn, "planet", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
+	char *words[] = { "nasa", "mars", "earth", NULL };
+	retrieve(whatisreturn, words , numofdocuments(collectionfile));
 
   return 0;
 }

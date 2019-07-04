@@ -64,7 +64,7 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   		return newtree; // ASK ABOUT EXIT FAILURE
 	}
 //  fscanf(f, "%s", filestemp);
-  char* dir = dirname(collectionFilename);
+  char* dir = dirname(strdup(collectionFilename));
   //printf("This dir: [%s]\n", dir);
   while(fscanf(f, "%s", filestemp) != EOF){
   //  printf("This is the file: %s\n", filestemp);
@@ -320,6 +320,9 @@ int numofdocuments(char *collectionFilename){
 
 TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D){
   InvertedIndexBST wordNode = BSTreeFind(tree, searchWord);
+  if(wordNode == NULL){
+    return NULL;
+  }
   FileList itterativecounter = wordNode->fileList;
   double count = 0;
   while(itterativecounter!=NULL){
@@ -411,10 +414,50 @@ void printTfIdf(TfIdfList t){
 
 TfIdfList newTfIdfNode(char *file)
 {
-	TfIdfList new = malloc(sizeof(struct TfIdfNode));
+    TfIdfList new = malloc(sizeof(struct TfIdfNode));
 	assert(new != NULL);
   new->filename = strdup(file);
   new->tfidf_sum = 0; // CREATE TF CALCULATION FILE
   new->next = NULL;
   return new;
 }
+
+
+TfIdfList retrieve(InvertedIndexBST tree, char* searchWords[] , int D){
+    int num_of_search_words = 0;
+    while(searchWords[num_of_search_words] != NULL){
+        printf("%s ", searchWords[num_of_search_words]);
+        
+        /*
+        InvertedIndexBST testword = BSTreeFind(tree, searchWords[i]);
+        if(testword == NULL){
+            return NULL;
+        }*/
+        
+        num_of_search_words++;
+    }
+    
+    printf("\nThe num of searched words : [%d]\n", num_of_search_words);
+    TfIdfList returnvalue = NULL;
+    
+    int counter = 0;
+    while(counter<num_of_search_words){
+    /*
+    FileList increment = wordNode->fileList;
+    while(increment != NULL){
+      returnvalue = addsingleTfIdfNode(returnvalue, increment->filename, increment->tf, D, count);
+      increment = increment->next;
+    }
+    return returnvalue;
+    */
+        printf("hi\n");
+        counter++;
+    }
+    
+    
+    
+    return NULL;
+}
+
+
+
