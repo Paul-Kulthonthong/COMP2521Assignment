@@ -34,6 +34,9 @@ TfIdfList newTfIdfNode(char *file);
 TfIdfList addsingleTfIdfNode(TfIdfList addonto, char *file, double tf, int D, int numoffiles);
 void printTfIdf(TfIdfList t);
 double calcsingleTfIdfsum(double tf, int D, double numoffiles);
+TfIdfList checktfIdfNode(TfIdfList t, char * filecheck);
+TfIdfList duplicatetdidfnode(TfIdfList original);
+TfIdfList sorttdidf(TfIdfList orginal, TfIdfList addonto);
 
 
 
@@ -361,7 +364,7 @@ TfIdfList addsingleTfIdfNode(TfIdfList addonto, char *file, double tf, int D, in
       return addonto;
     }
     else{
-      while(newtfidfnode->tfidf_sum<itterativepointer->tfidf_sum){
+      while(newtfidfnode->tfidf_sum<=itterativepointer->tfidf_sum){
         if(itterativepointer->next == NULL){
           itterativepointer->next = newtfidfnode;
           return addonto;
@@ -397,13 +400,16 @@ double calcsingleTfIdfsum(double tf, int D, double numoffiles){
   double tfidfsum = 0;
   //printf("this is the numoffiles & d: [%f & %d]\n", numoffiles, D);
   tfidfsum = tf*log10(D/numoffiles);
-  
+
   //printf("this is the tfidfsum: [%f]\n", tfidfsum);
   return tfidfsum;
 }
 
 
 void printTfIdf(TfIdfList t){
+  if(t == NULL){
+    return;
+  }
   printf("PrintingTfIdf: ");
   while(t != NULL){
     printf("%s [tdidf: %f] ",t->filename, t->tfidf_sum);
@@ -422,42 +428,128 @@ TfIdfList newTfIdfNode(char *file)
   return new;
 }
 
+TfIdfList checktfIdfNode(TfIdfList t, char * filecheck){
+    while(t != NULL){
+        if(strcmp(t->filename, filecheck) == 0){
+            return t;
+        }
+        t = t->next;
+    }
+    return NULL;
+}
 
 TfIdfList retrieve(InvertedIndexBST tree, char* searchWords[] , int D){
     int num_of_search_words = 0;
     while(searchWords[num_of_search_words] != NULL){
         printf("%s ", searchWords[num_of_search_words]);
-        
-        /*
-        InvertedIndexBST testword = BSTreeFind(tree, searchWords[i]);
-        if(testword == NULL){
-            return NULL;
-        }*/
-        
         num_of_search_words++;
     }
-    
+
     printf("\nThe num of searched words : [%d]\n", num_of_search_words);
-    TfIdfList returnvalue = NULL;
-    
+    TfIdfList retrievetfidflist = NULL;
+
     int counter = 0;
     while(counter<num_of_search_words){
-    /*
-    FileList increment = wordNode->fileList;
-    while(increment != NULL){
-      returnvalue = addsingleTfIdfNode(returnvalue, increment->filename, increment->tf, D, count);
-      increment = increment->next;
-    }
-    return returnvalue;
-    */
-        printf("hi\n");
+        InvertedIndexBST testword = BSTreeFind(tree, searchWords[counter]);
+        if(testword != NULL){
+            printf("Testword: [%s]\n", testword->word);
+            FileList itterativecounter = testword->fileList;
+            double count = 0;
+            while(itterativecounter!=NULL){
+                count++;
+                itterativecounter = itterativecounter->next;
+            }
+            printf("IT is within: [%f] files\n",count);
+
+            FileList increment = testword->fileList;
+            while(increment != NULL){
+                if(checktfIdfNode(retrievetfidflist, increment->filename) == NULL){
+                    retrievetfidflist = addsingleTfIdfNode(retrievetfidflist, increment->filename, increment->tf, D, count);
+                }
+                else{
+                    TfIdfList temp = checktfIdfNode(retrievetfidflist, increment->filename);
+                  //  printf("Didnt add: [%s with tfidf[%f]]", temp->filename,
+                    double addition = calcsingleTfIdfsum(increment->tf, D, count);
+                    //printf("to be added: [%f]\n", addition);
+                    temp->tfidf_sum += addition;
+                  //  temp->tfidf_sum += 1;
+                }
+                increment = increment->next;
+            }
+
+      }
+
+      //  printf("hi\n");
         counter++;
     }
-    
-    
-    
-    return NULL;
+
+    printf("UNSORTED: ");
+    printTfIdf(retrievetfidflist);
+
+    TfIdfList sorted = NULL;
+    sorted= sorttdidf(retrievetfidflist, sorted);
+
+    return sorted;
 }
 
+TfIdfList sorttdidf(TfIdfList original, TfIdfList addonto){
 
+    TfIdfList originalpointer = original;
+    TfIdfList itterativepointer = addonto;
+    while(originalpointer != NULL){
+        TfIdfList newtfidfnode = duplicatetdidfnode(originalpointer);
+        printf("here\n");
+        printf("[filename:%s tfidf_sum:%f]\n", newtfidfnode->filename, newtfidfnode->tfidf_sum);
+        if(itterativepointer == NULL){
+            addonto = newtfidfnode;
+        }
+        else{
+            if(newtfidfnode->tfidf_sum>itterativepointer->tfidf_sum) {
+                newtfidfnode->next = itterativepointer;
+                addonto = newtfidfnode;
+            }
+            else{
+                while(newtfidfnode->tfidf_sum <= itterativepointer->tfidf_sum){
+                  if(itterativepointer->next == NULL){
+                    itterativepointer->next = newtfidfnode;
+                    break;
+                  }
+                  else if(newtfidfnode->tfidf_sum>itterativepointer->next->tfidf_sum){
+                    newtfidfnode->next = itterativepointer->next;
+                    itterativepointer->next = newtfidfnode;
+                    break;
+                  }
+                  else if(newtfidfnode->tfidf_sum==itterativepointer->next->tfidf_sum){
+                    if(strcmp(itterativepointer->next->filename,  newtfidfnode->filename) > 0){
+                      newtfidfnode->next = itterativepointer->next;
+                      itterativepointer->next = newtfidfnode;
+                      break;
+                    }
+                    else{
+                      newtfidfnode->next = itterativepointer->next->next;
+                      itterativepointer->next->next = newtfidfnode;
+                      break;
+                    }
+                  }
+                  else{
+                    itterativepointer = itterativepointer->next;
+                  }
+                }
+            }
+        }
+        itterativepointer = addonto;
+        originalpointer = originalpointer->next;
+    }
+    return addonto;
 
+}
+
+TfIdfList duplicatetdidfnode(TfIdfList original){
+  TfIdfList replicate = malloc(sizeof(struct TfIdfNode));
+  assert(replicate != NULL);
+  replicate->filename = strdup(original->filename);
+  replicate->tfidf_sum = original->tfidf_sum; // CREATE TF CALCULATION FILE
+  replicate->next = NULL;
+  return replicate;
+
+}

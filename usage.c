@@ -31,10 +31,16 @@ int main(int argc, char *argv[])
 	InvertedIndexBST findingnemo = BSTreeFind(whatisreturn, "moon");
 	printf("found nemo? [%s]\n", findingnemo->word);
 	printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
-	TfIdfList testtdf = calculateTfIdf(whatisreturn, "planet", numofdocuments(collectionfile));
+	TfIdfList testtdf = calculateTfIdf(whatisreturn, "long", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
-	char *words[] = { "nasa", "mars", "earth", NULL };
-	retrieve(whatisreturn, words , numofdocuments(collectionfile));
-
+	testtdf = calculateTfIdf(whatisreturn, "man", numofdocuments(collectionfile));
+	printTfIdf(testtdf);
+//	testtdf = calculateTfIdf(whatisreturn, "waves", numofdocuments(collectionfile));
+//	printTfIdf(testtdf);
+	printf("\n");
+	char *words[] = { "long", "man", NULL };
+	TfIdfList retrived = retrieve(whatisreturn, words , numofdocuments(collectionfile));
+	printf("SORTED: ");
+	printTfIdf(retrived);
   return 0;
 }
