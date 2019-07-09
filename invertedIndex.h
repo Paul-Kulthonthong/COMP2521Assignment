@@ -55,8 +55,6 @@ void printInvertedIndex(InvertedIndexBST tree);
 
 
 int BSTreeNumNodes(InvertedIndexBST t);
-void showBSTreeNode(InvertedIndexBST t);
-InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword);
 int numofdocuments(char *collectionFilename);
 void printTfIdf(TfIdfList t);
 

@@ -1,3 +1,7 @@
+//z5208916 (Paul Tawanwad Kulthonthong) Assignment 1
+//COMP2521 T2
+//inverted index
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -14,11 +18,7 @@ InvertedIndexBST newBSTNode(char *inputword);
 InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword);
 InvertedIndexBST newBSTree();
 int BSTreeNumNodes(InvertedIndexBST t);
-void showBSTreeNode(InvertedIndexBST t);
 char * getfiledir(char * dir, char *filename);
-void BSTreeInfix(InvertedIndexBST t);
-void BSTreePrefix(InvertedIndexBST t);
-void BSTreePostfix(InvertedIndexBST t);
 void showBSTreeNodeandList(InvertedIndexBST t);
 InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword);
 
@@ -39,10 +39,11 @@ TfIdfList duplicatetdidfnode(TfIdfList original);
 TfIdfList sorttdidf(TfIdfList orginal, TfIdfList addonto);
 
 
-
+//This function normalises a word and check the final letter
+//to see if specific character and decides if it is deleted
 char * normaliseWord(char *tobenormalised){
   int i = 0;
-  while( tobenormalised[i] ) {
+  while(tobenormalised[i]){
     tobenormalised[i] = tolower(tobenormalised[i]);
     i++;
   }
@@ -52,7 +53,8 @@ char * normaliseWord(char *tobenormalised){
   return tobenormalised;
 }
 
-
+//Generates a inverted index tree that is based does infix order
+//based on the string characters in alphabetical order
 InvertedIndexBST generateInvertedIndex(char *collectionFilename){
 
   InvertedIndexBST newtree = malloc(sizeof(InvertedIndexBST));
@@ -64,17 +66,12 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
 
   if ((f = fopen(collectionFilename,"r")) == NULL) {
   		fprintf(stderr, "Can't open file %s\n", collectionFilename);
-  		return newtree; // ASK ABOUT EXIT FAILURE
+  		return NULL;
 	}
-//  fscanf(f, "%s", filestemp);
+
   char* dir = dirname(strdup(collectionFilename));
-  //printf("This dir: [%s]\n", dir);
   while(fscanf(f, "%s", filestemp) != EOF){
-  //  printf("This is the file: %s\n", filestemp);
-
     char * filename  = getfiledir(dir, filestemp);
-  //  printf("from currfile[%s]\n", filename);
-
     if ((ff = fopen(filename,"r")) == NULL) {
     		fprintf(stderr, "Can't open file %s\n", filename);
     		return newtree;
@@ -82,17 +79,14 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     rewind(ff);
     int num_of_words = 0;
     while(fscanf(ff, "%s", infileword) != EOF){
-      char* returned = strdup(normaliseWord(infileword));
-  		//printf("This is the words in the file that has been normalised: [%s]\n", returned);
-      newtree = BSTreeInsert(newtree, returned);
-      int check = fileNodeExist(BSTreeFind(newtree, returned), filestemp);
+      char* normalised = strdup(normaliseWord(infileword));
+      newtree = BSTreeInsert(newtree, normalised);
+      int check = fileNodeExist(BSTreeFind(newtree, normalised), filestemp);
       if(check == 0){
         FileList newfn = newFileNode(filestemp);
-        newfn->tf = calculatetf(filename, returned);
-        addFileNode(BSTreeFind(newtree, returned), newfn);
+        newfn->tf = calculatetf(filename, normalised);
+        addFileNode(BSTreeFind(newtree, normalised), newfn);
       }
-      //printf("FileNODE: [%s]\n", newfn->filename);
-
       num_of_words ++;
     }
     fclose(ff);
@@ -102,6 +96,7 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   return newtree;
 }
 
+//Calculates the tf of a specific word within a specific file
 double calculatetf(char *file, char *word){
   double tf = 0;
   double wordcount = 0;
@@ -124,17 +119,18 @@ double calculatetf(char *file, char *word){
   return tf;
 }
 
-
+//Creates a new file node
 FileList newFileNode(char *inputfile)
 {
   FileList new = malloc(sizeof(struct FileListNode));
   assert(new != NULL);
   new->filename = strdup(inputfile);
-  new->tf = 0; // CREATE TF CALCULATION FILE
+  new->tf = 0;
   new->next = NULL;
   return new;
 }
 
+//Adds a filenode to a word node
 void addFileNode(InvertedIndexBST indexWordNode, FileList fileNode)
 {
   if(indexWordNode->fileList == NULL){
@@ -145,6 +141,8 @@ void addFileNode(InvertedIndexBST indexWordNode, FileList fileNode)
   }
 }
 
+//Inserts the file node in the correct position within the
+//word node's files list with alphabetical order
 void fileNodeInsert(InvertedIndexBST indexWordNode, FileList fileNode){
 
   FileList itterativepointer = indexWordNode->fileList;
@@ -173,6 +171,9 @@ void fileNodeInsert(InvertedIndexBST indexWordNode, FileList fileNode){
 
 }
 
+//Checks if a filenode with the same filename already exist within a
+//word node's file list if it does exist return 1 if it doesnt then
+//return 0
 int fileNodeExist(InvertedIndexBST t, char *inputfile){
   FileList itterative = t->fileList;
   int returnvalue = 0;
@@ -185,12 +186,13 @@ int fileNodeExist(InvertedIndexBST t, char *inputfile){
   return returnvalue;
 }
 
-
+//creates a new tree pointer to work with
 InvertedIndexBST newBSTree()
 {
 	return NULL;
 }
 
+//Creates a new word node that will form the tree
 InvertedIndexBST newBSTNode(char *inputword)
 {
 	InvertedIndexBST new = malloc(sizeof(struct InvertedIndexNode));
@@ -201,6 +203,7 @@ InvertedIndexBST newBSTNode(char *inputword)
 	return new;
 }
 
+//Adds the word node in the correct position within the tree
 InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword)
 {
 
@@ -208,11 +211,9 @@ InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword)
 		return newBSTNode(inputword);
   }
 	else if (strcmp(inputword, t->word) < 0){
-    //printf("here to the left");
     t->left = BSTreeInsert(t->left, inputword);
   }
 	else if (strcmp(inputword, t->word) > 0){
-    //printf("here to the right");
 		t->right = BSTreeInsert(t->right, inputword);
   }
 	else; // (strcmp(inputword, t->word) == 0)
@@ -220,6 +221,7 @@ InvertedIndexBST BSTreeInsert(InvertedIndexBST t, char *inputword)
 	return t;
 }
 
+//Return a specific word node on the tree based on a specific word
 InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword)
 {
 	if (t == NULL)
@@ -232,6 +234,7 @@ InvertedIndexBST BSTreeFind(InvertedIndexBST t, char *inputword)
 		return t;
 }
 
+//Counts the number of nodes (used for testing)
 int BSTreeNumNodes(InvertedIndexBST t)
 {
 	if (t == NULL)
@@ -241,12 +244,7 @@ int BSTreeNumNodes(InvertedIndexBST t)
 	             + BSTreeNumNodes(t->right);
 }
 
-void showBSTreeNode(InvertedIndexBST t)
-{
-	if (t == NULL) return;
-	printf("%s\n", t->word);
-}
-
+//prints the word node including their filelist
 void showBSTreeNodeandList(InvertedIndexBST t)
 {
 	if (t == NULL) return;
@@ -259,43 +257,20 @@ void showBSTreeNodeandList(InvertedIndexBST t)
   printf("\n");
 }
 
-void BSTreeInfix(InvertedIndexBST t)
-{
-	if (t == NULL) return;
-	BSTreeInfix(t->left);
-	showBSTreeNode(t);
-	BSTreeInfix(t->right);
-}
-
-void BSTreePrefix(InvertedIndexBST t)
-{
-	if (t == NULL) return;
-	showBSTreeNode(t);
-	BSTreePrefix(t->left);
-	BSTreePrefix(t->right);
-}
-
-void BSTreePostfix(InvertedIndexBST t)
-{
-	if (t == NULL) return;
-	BSTreePostfix(t->left);
-	BSTreePostfix(t->right);
-	showBSTreeNode(t);
-}
 
 char * getfiledir(char * dir, char *filename)
 {
   char currfile[MAX]= "\0";
-  //printf("This is dir: [%s]\n", dir);
   strcat(currfile, dir);
   strcat(currfile, "/");
   strcat(currfile, filename);
-
   char * filedir = strdup(currfile);
-//  printf("This is filedir[%s]\n", filedir);
   return filedir;
 }
 
+//prints the inverted index in alphabetical order
+//Then prints the filelist of a particular word node
+//in also alphabetical order
 void printInvertedIndex(InvertedIndexBST tree)
 {
   if (tree == NULL) return;
@@ -305,6 +280,7 @@ void printInvertedIndex(InvertedIndexBST tree)
   return;
 }
 
+//Counts the number of word documents within the collection 
 int numofdocuments(char *collectionFilename){
   FILE *f;
   char temp[MAX];

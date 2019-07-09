@@ -19,17 +19,13 @@ int main(int argc, char *argv[])
 	}
   strcpy(fname,argv[1]);
   char *collectionfile = strdup(fname);
-    printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
 
 	InvertedIndexBST whatisreturn = generateInvertedIndex(collectionfile);
 	printf("\nOUTSIDE NOW\n\n");
 	printInvertedIndex(whatisreturn);
 
 	printf("\n\nTHIS IS FINAL TEST: ");
-	showBSTreeNode(whatisreturn);
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));
-	InvertedIndexBST findingnemo = BSTreeFind(whatisreturn, "moon");
-	printf("found nemo? [%s]\n", findingnemo->word);
 	printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
 	TfIdfList testtdf = calculateTfIdf(whatisreturn, "eu", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
