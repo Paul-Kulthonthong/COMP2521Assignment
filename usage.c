@@ -27,14 +27,14 @@ int main(int argc, char *argv[])
 	printf("\n\nTHIS IS FINAL TEST: ");
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));
 	printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
-	TfIdfList testtdf = calculateTfIdf(whatisreturn, "eu", numofdocuments(collectionfile));
+	TfIdfList testtdf = calculateTfIdf(whatisreturn, "waves", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
 	testtdf = calculateTfIdf(whatisreturn, "weather", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
-	testtdf = calculateTfIdf(whatisreturn, "waves", numofdocuments(collectionfile));
+	testtdf = calculateTfIdf(whatisreturn, "eu", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
 	printf("\n");
-	char *words[] = { "eu", "weather", "waves", NULL };
+	char *words[] = { "waves", "weather", "eu", NULL };
 	TfIdfList retrived = retrieve(whatisreturn, words , numofdocuments(collectionfile));
 	printf("SORTED: ");
 	printTfIdf(retrived);
