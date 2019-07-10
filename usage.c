@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
 
 	printf("\n\nTHIS IS FINAL TEST: ");
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));
-	printf("num of docs: [%d] in %s\n", numofdocuments(collectionfile), collectionfile);
 	TfIdfList testtdf = calculateTfIdf(whatisreturn, "waves", numofdocuments(collectionfile));
 	printTfIdf(testtdf);
 	testtdf = calculateTfIdf(whatisreturn, "weather", numofdocuments(collectionfile));
