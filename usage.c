@@ -7,10 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-	FILE *f;
 	char fname[MAX];
-  char files[MAX];
-  char test[MAX];
 
   //Test if you input a collection of files txt
 	if (argc < 2) {
@@ -18,11 +15,13 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
   strcpy(fname,argv[1]);
-  char *collectionfile = strdup(fname);
+    char *collectionfile = malloc(strlen(fname));
+    strcpy(collectionfile, fname);
 
 	InvertedIndexBST whatisreturn = generateInvertedIndex(collectionfile);
 	printf("\nOUTSIDE NOW\n\n");
 	printInvertedIndex(whatisreturn);
+	
 
 	printf("\n\nTHIS IS FINAL TEST: ");
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));

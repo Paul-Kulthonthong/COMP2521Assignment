@@ -72,9 +72,11 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   		return NULL;
 	}
 
-  temp = dirname(collectionFilename);
+  char *collectionfullcopy = malloc(strlen(collectionFilename));
+  strcpy(collectionfullcopy, collectionFilename);
+  temp = dirname(collectionfullcopy);
   char* dir = malloc(strlen(temp)*sizeof(char));
-  strcpy(dir, dirname(collectionFilename));
+  strcpy(dir, temp);
 
   while(fscanf(f, "%s", filestemp) != EOF){
     
@@ -89,7 +91,7 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     while(fscanf(ff, "%s", infileword) != EOF){
       temp = normaliseWord(infileword);
       char* normalised = malloc(strlen(temp)*sizeof(char));
-      strcpy(normalised, normaliseWord(infileword));
+      strcpy(normalised, temp);
       newtree = BSTreeInsert(newtree, normalised);
       int check = fileNodeExist(BSTreeFind(newtree, normalised), filestemp);
       if(check == 0){
