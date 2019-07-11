@@ -65,15 +65,21 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   FILE *ff;
   char filestemp[MAX];
   char infileword[MAX];
+  char *temp;
 
   if ((f = fopen(collectionFilename,"r")) == NULL) {
   		fprintf(stderr, "Can't open file %s\n", collectionFilename);
   		return NULL;
 	}
 
-  char* dir = dirname(strdup(collectionFilename));
+  temp = dirname(collectionFilename);
+  char* dir = malloc(strlen(temp)*sizeof(char));
+  strcpy(dir, dirname(collectionFilename));
+
   while(fscanf(f, "%s", filestemp) != EOF){
-    char * filename  = getfiledir(dir, filestemp);
+    
+    char * filename = getfiledir(dir, filestemp);
+
     if ((ff = fopen(filename,"r")) == NULL) {
     		fprintf(stderr, "Can't open file %s\n", filename);
     		return newtree;
@@ -81,7 +87,9 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     rewind(ff);
     int num_of_words = 0;
     while(fscanf(ff, "%s", infileword) != EOF){
-      char* normalised = strdup(normaliseWord(infileword));
+      temp = normaliseWord(infileword);
+      char* normalised = malloc(strlen(temp)*sizeof(char));
+      strcpy(normalised, normaliseWord(infileword));
       newtree = BSTreeInsert(newtree, normalised);
       int check = fileNodeExist(BSTreeFind(newtree, normalised), filestemp);
       if(check == 0){
@@ -126,7 +134,8 @@ FileList newFileNode(char *inputfile)
 {
   FileList new = malloc(sizeof(struct FileListNode));
   assert(new != NULL);
-  new->filename = strdup(inputfile);
+  new->filename = malloc(strlen(inputfile)*sizeof(char));
+  strcpy(new->filename, inputfile);
   new->tf = 0;
   new->next = NULL;
   return new;
@@ -262,11 +271,11 @@ void showBSTreeNodeandList(InvertedIndexBST t)
 
 char * getfiledir(char * dir, char *filename)
 {
-  char currfile[MAX]= "\0";
-  strcat(currfile, dir);
-  strcat(currfile, "/");
-  strcat(currfile, filename);
-  char * filedir = strdup(currfile);
+  char *filedir = malloc((strlen(filename)+strlen(dir)+2)*sizeof(char));
+  strcpy(filedir, dir);
+  strcat(filedir, "/");
+  strcat(filedir, filename);
+  strcat(filedir, "\0");
   return filedir;
 }
 
@@ -405,7 +414,8 @@ TfIdfList newTfIdfNode(char *file)
 {
   TfIdfList new = malloc(sizeof(struct TfIdfNode));
 	assert(new != NULL);
-  new->filename = strdup(file);
+  new->filename = malloc(strlen(file)*sizeof(char));
+  strcpy(new->filename, file);
   new->tfidf_sum = 0;
   new->next = NULL;
   return new;
@@ -528,7 +538,8 @@ TfIdfList sorttdidf(TfIdfList original, TfIdfList addonto){
 TfIdfList duplicatetdidfnode(TfIdfList original){
   TfIdfList replicate = malloc(sizeof(struct TfIdfNode));
   assert(replicate != NULL);
-  replicate->filename = strdup(original->filename);
+  replicate->filename = malloc(strlen(original->filename)*sizeof(char));
+  strcpy(replicate->filename, original->filename);
   replicate->tfidf_sum = original->tfidf_sum;
   replicate->next = NULL;
   return replicate;
