@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	InvertedIndexBST whatisreturn = generateInvertedIndex(collectionfile);
 	printf("\nOUTSIDE NOW\n\n");
 	printInvertedIndex(whatisreturn);
-	
+
 
 	printf("\n\nTHIS IS FINAL TEST: ");
 	printf("num of nodes: %d\n", BSTreeNumNodes(whatisreturn));
