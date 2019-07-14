@@ -491,8 +491,6 @@ TfIdfList retrieve(InvertedIndexBST tree, char* searchWords[] , int D){
         counter++;
     }
 
-    printf("UNSORTED: ");
-    printTfIdf(retrievetfidflist);
 
     TfIdfList sorted = NULL;
     sorted= sorttdidf(retrievetfidflist, sorted);
