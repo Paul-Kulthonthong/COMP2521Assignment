@@ -6,7 +6,7 @@
    2) cd to say "ass1_test"
    3) copy or link your files (the files you need to submit) to "ass1_test"
    4) Generate executable using  the following command
-      % gcc -Wall -Werror -lm -std=c11 *.c  test_Ass1.c  -o  test_Ass1
+      % gcc -Wall -Werror -lm -std=c11 *.c  -o  test_Ass1
    5) Run
       %  ./test_Ass1
    6) Check your answers with the expected answers (read comments below)
@@ -17,6 +17,25 @@
 #include <ctype.h>
 #include <string.h>
 #include "invertedIndex.h" 
+
+/** Util function below ...
+*/
+void printTfIdfList(char *filename, TfIdfList list){
+	
+	FILE *fp = fopen(filename, "w");
+	if( fp == NULL ) { 
+		printf("Error opening file : %s \n", filename );
+		return;
+	}
+
+	TfIdfList cur = list;
+	while(cur != NULL) {
+		fprintf(fp, "%.6f  %s\n",  cur->tfidf_sum, cur->filename );
+		cur = cur->next;
+	}
+	fclose(fp);
+}
+
 
 void checkNormalisedString(char *origString, char *answerString){
 
@@ -48,22 +67,6 @@ void testNormalise(){
 	checkNormalisedString("Sydney???", "sydney??");
 }
 
-
-void printTfIdfList(char *filename, TfIdfList list){
-
-	FILE *fp = fopen(filename, "w");
-	if( fp == NULL ) { 
-		printf("Error opening file : %s \n", filename );
-		return;
-	}
-
-	TfIdfList cur = list;
-	while(cur != NULL) {
-		fprintf(fp, "%.6f  %s\n",  cur->tfidf_sum, cur->filename );
-		cur = cur->next;
-	}
-	fclose(fp);
-}
 
 int main (int argc, char *argv[]) {
 
@@ -101,21 +104,35 @@ int main (int argc, char *argv[]) {
 	    same as the expected answer in "sun_TfIdfList_exp.txt"
 	*/
 	printTfIdfList("sun_TfIdfList.txt" , list_sun);
-	
+
+
+	TfIdfList list_moon = calculateTfIdf(invertedTree, "moon" , 7); 
+	printTfIdfList("moon_TfIdfList.txt" , list_moon );
+		
 	// ---------------------------------------------------------
 
 
 	/**  -----  The following will be available over the weekend -----
 	*/
 
-	//char *words[] = { "nasa", "mars", "earth", NULL }; 
-	//TfIdfList listM = retrieve(invertedTree, words , 7);
+	char *words[] = { "nasa", "mars", "moon", NULL }; 
+	TfIdfList listM = retrieve(invertedTree, words , 7);
 
-	/** Your output in "multiple_words_TfIdfList.txt" should be 
-	    same as the expected answer in "multiple_words_TfIdfList_exp.txt"
+	/** Your output in "nasa_mars_moon.txt" should be 
+	    same as the expected answer in "nasa_mars_moon.txt_exp.txt"
 	*/
-	//printTfIdfList("multiple_words_TfIdfList.txt" , listM);
+	printTfIdfList("nasa_mars_moon.txt" , listM);
 
+
+
+	/**  I am not providing a free function here, because that will expose some logic 
+	     required for the assignment!
+
+		 You should implement a "free" function to free "invertedTree" and the related memory,
+		 and call it here. However, note that it is not part of the requirement and will not be marked. 
+		 If you don't free "invertedTree" here, all the memory associated with this process will be 
+		 reclaimed by the OS at the termination of this program. 
+	*/
 
 	return 0;
 
