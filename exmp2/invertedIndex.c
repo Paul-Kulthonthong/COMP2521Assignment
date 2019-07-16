@@ -82,7 +82,6 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
 
 
   while(fscanf(f, "%s", filestemp) != EOF){
-    printf("%s\n", filestemp);
     char * filename = getfiledir(dir, filestemp);
 
     if ((ff = fopen(filename,"r")) == NULL) {
@@ -93,14 +92,10 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     int num_of_words = 0;
     while(fscanf(ff, "%s", infileword) != EOF){
       temp = normaliseWord(infileword);
-      char* normalised = malloc(strlen(temp)*sizeof(char));
+      char* normalised = malloc(strlen(temp)*sizeof(char) + 1);
       strcpy(normalised, temp);
-      printf("%d %s\n", num_of_words, normalised);
-      printf("here\n");
       newtree = BSTreeInsert(newtree, normalised);
-      printf("after insert\n");
       int check = fileNodeExist(BSTreeFind(newtree, normalised), filestemp);
-
       if(check == 0){
         FileList newfn = newFileNode(filestemp);
         newfn->tf = calculatetf(filename, normalised);
@@ -215,9 +210,7 @@ InvertedIndexBST newBSTree()
 //Creates a new word node that will form the tree
 InvertedIndexBST newBSTNode(char *inputword)
 {
-  printf("what 1\n");
 	InvertedIndexBST new = malloc(sizeof(struct InvertedIndexNode));
-	printf("what 2\n");
 	assert(new != NULL);
 	new->word = malloc(strlen(inputword) + 1);
   assert(new->word != NULL);
@@ -440,7 +433,7 @@ TfIdfList newTfIdfNode(char *file)
 {
   TfIdfList new = malloc(sizeof(struct TfIdfNode));
 	assert(new != NULL);
-  new->filename = malloc(strlen(file)*sizeof(char));
+  new->filename = malloc(strlen(file)*sizeof(char) + 1);
   strcpy(new->filename, file);
   new->tfidf_sum = 0;
   new->next = NULL;
