@@ -92,7 +92,7 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     int num_of_words = 0;
     while(fscanf(ff, "%s", infileword) != EOF){
       temp = normaliseWord(infileword);
-      char* normalised = malloc(strlen(temp)*sizeof(char));
+      char* normalised = malloc(strlen(temp)*sizeof(char) + 1);
       strcpy(normalised, temp);
       newtree = BSTreeInsert(newtree, normalised);
       int check = fileNodeExist(BSTreeFind(newtree, normalised), filestemp);
@@ -356,7 +356,9 @@ TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord , int D){
       returnvalue = addsingleTfIdfNode(returnvalue, increment->filename, increment->tf, D, filecounter);
       increment = increment->next;
     }
-    return returnvalue;
+    TfIdfList sorted = NULL;
+    sorted= sorttdidf(returnvalue, sorted);
+    return sorted;
   }
 }
 
@@ -433,7 +435,7 @@ TfIdfList newTfIdfNode(char *file)
 {
   TfIdfList new = malloc(sizeof(struct TfIdfNode));
 	assert(new != NULL);
-  new->filename = malloc(strlen(file)*sizeof(char));
+  new->filename = malloc(strlen(file)*sizeof(char) + 1);
   strcpy(new->filename, file);
   new->tfidf_sum = 0;
   new->next = NULL;
@@ -516,6 +518,15 @@ TfIdfList sorttdidf(TfIdfList original, TfIdfList addonto){
                 newtfidfnode->next = itterativepointer;
                 addonto = newtfidfnode;
             }
+            else if(newtfidfnode->tfidf_sum==itterativepointer->tfidf_sum){
+                if(strcmp(newtfidfnode->filename, itterativepointer->filename) > 0){
+                    itterativepointer->next = newtfidfnode;
+                }
+                else{
+                  newtfidfnode->next = itterativepointer;
+                  addonto = newtfidfnode;
+                }
+            }
             else{
                 while(newtfidfnode->tfidf_sum <= itterativepointer->tfidf_sum){
                   if(itterativepointer->next == NULL){
@@ -528,14 +539,12 @@ TfIdfList sorttdidf(TfIdfList original, TfIdfList addonto){
                     break;
                   }
                   else if(newtfidfnode->tfidf_sum==itterativepointer->next->tfidf_sum){
-                    if(strcmp(itterativepointer->next->filename,  newtfidfnode->filename) > 0){
-                      newtfidfnode->next = itterativepointer->next;
-                      itterativepointer->next = newtfidfnode;
-                      break;
+                    if(strcmp(newtfidfnode->filename, itterativepointer->next->filename) > 0){
+                      itterativepointer = itterativepointer->next;
                     }
                     else{
-                      newtfidfnode->next = itterativepointer->next->next;
-                      itterativepointer->next->next = newtfidfnode;
+                      newtfidfnode->next = itterativepointer->next;
+                      itterativepointer->next = newtfidfnode;
                       break;
                     }
                   }
