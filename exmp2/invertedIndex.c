@@ -143,7 +143,7 @@ FileList newFileNode(char *inputfile)
 {
   FileList new = malloc(sizeof(struct FileListNode));
   assert(new != NULL);
-  new->filename = malloc(strlen(inputfile)*sizeof(char));
+  new->filename = malloc(strlen(inputfile)*sizeof(char) + 1);
   strcpy(new->filename, inputfile);
   new->tf = 0;
   new->next = NULL;
@@ -215,7 +215,7 @@ InvertedIndexBST newBSTree()
 //Creates a new word node that will form the tree
 InvertedIndexBST newBSTNode(char *inputword)
 {
-    printf("what 1\n");
+  printf("what 1\n");
 	InvertedIndexBST new = malloc(sizeof(struct InvertedIndexNode));
 	printf("what 2\n");
 	assert(new != NULL);
@@ -223,7 +223,7 @@ InvertedIndexBST newBSTNode(char *inputword)
   assert(new->word != NULL);
   strcpy(new->word, inputword);
 	new->left = new->right = NULL;
-    new->fileList = NULL;
+  new->fileList = NULL;
 	return new;
 }
 
