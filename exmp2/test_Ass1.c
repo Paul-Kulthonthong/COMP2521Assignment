@@ -79,7 +79,7 @@ int main (int argc, char *argv[]) {
 	testNormalise();
 
 	// ---------------------------------------------------------
-	printf("here\n");
+	
 	InvertedIndexBST invertedTree =  generateInvertedIndex("collection.txt");
 
 	/** Your output in "invertedIndex.txt" should be
