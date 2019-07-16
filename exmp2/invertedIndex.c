@@ -67,20 +67,20 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
   char filestemp[MAX];
   char infileword[MAX];
   char *temp;
-  
+
   if ((f = fopen(collectionFilename,"r")) == NULL) {
   		fprintf(stderr, "Can't open file %s\n", collectionFilename);
   		return NULL;
 	}
-  
-  
+
+
   char *collectionfullcopy = malloc(strlen(collectionFilename));
   strcpy(collectionfullcopy, collectionFilename);
   temp = dirname(collectionfullcopy);
   char* dir = malloc(strlen(temp)*sizeof(char));
   strcpy(dir, temp);
-  
-  
+
+
   while(fscanf(f, "%s", filestemp) != EOF){
     printf("%s\n", filestemp);
     char * filename = getfiledir(dir, filestemp);
@@ -100,14 +100,14 @@ InvertedIndexBST generateInvertedIndex(char *collectionFilename){
       newtree = BSTreeInsert(newtree, normalised);
       printf("after insert\n");
       int check = fileNodeExist(BSTreeFind(newtree, normalised), filestemp);
-      
+
       if(check == 0){
         FileList newfn = newFileNode(filestemp);
         newfn->tf = calculatetf(filename, normalised);
         addFileNode(BSTreeFind(newtree, normalised), newfn);
       }
       num_of_words ++;
-    }   
+    }
     fclose(ff);
   }
   fclose(f);
@@ -219,7 +219,9 @@ InvertedIndexBST newBSTNode(char *inputword)
 	InvertedIndexBST new = malloc(sizeof(struct InvertedIndexNode));
 	printf("what 2\n");
 	assert(new != NULL);
-	new->word = inputword;
+	new->word = malloc(strlen(inputword) + 1);
+  assert(new->word != NULL);
+  strcpy(new->word, inputword);
 	new->left = new->right = NULL;
     new->fileList = NULL;
 	return new;
