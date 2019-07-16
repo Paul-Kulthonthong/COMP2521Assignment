@@ -1,6 +1,6 @@
-/** 
-   test_Ass1.c - 
-   Simple tests for Ass1 
+/**
+   test_Ass1.c -
+   Simple tests for Ass1
 
    1) copy (link) example data files and test_Ass1.c to a new dir, say "ass1_test"
    2) cd to say "ass1_test"
@@ -16,14 +16,16 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include "invertedIndex.h" 
+#include "invertedIndex.h"
+
+
 
 /** Util function below ...
 */
 void printTfIdfList(char *filename, TfIdfList list){
-	
+
 	FILE *fp = fopen(filename, "w");
-	if( fp == NULL ) { 
+	if( fp == NULL ) {
 		printf("Error opening file : %s \n", filename );
 		return;
 	}
@@ -45,13 +47,13 @@ void checkNormalisedString(char *origString, char *answerString){
 	strcpy(originalString, origString);
 	stuString = normaliseWord(originalString);
 
-	if( (originalString == stuString) && 
+	if( (originalString == stuString) &&
 	    (strcmp(stuString, answerString) == 0) ){
 		printf("> Test Passed: %s to %s\n", origString, stuString);
 	}
 	else {
 		printf("> Test Failed: %s to %s [Expected %s]\n", origString, stuString, answerString);
-	}	
+	}
 }
 
 
@@ -70,72 +72,83 @@ void testNormalise(){
 
 int main (int argc, char *argv[]) {
 
-	// =========   Part-1 Testing  =========  
+	// =========   Part-1 Testing  =========
 
 	/** You should pass all the following tests!
 	*/
-	testNormalise(); 
+	testNormalise();
 
 	// ---------------------------------------------------------
-
+	printf("here\n");
 	InvertedIndexBST invertedTree =  generateInvertedIndex("collection.txt");
 
-	/** Your output in "invertedIndex.txt" should be 
+	/** Your output in "invertedIndex.txt" should be
 	    same as the expected answer in "invertedIndex_exp.txt"
 	*/
-        printInvertedIndex(invertedTree); 
+	
+  printInvertedIndex(invertedTree);
 
 
-	// =========   Part-2 Testing =========  
+	// =========   Part-2 Testing =========
 
 
-	TfIdfList list = calculateTfIdf(invertedTree, "mars" , 7); 
+	TfIdfList list1 = calculateTfIdf(invertedTree, "network" , 141);
 
-	/** Your output in "mars_TfIdfList.txt" should be 
-	    same as the expected answer in "mars_TfIdfList_exp.txt"
+	/** Your output in "network.txt" should be
+	    same as the expected answer in "network_exp.txt"
 	*/
-	printTfIdfList("mars_TfIdfList.txt" , list);
+	printTfIdfList("network.txt" , list1);
 
 
+	TfIdfList list2 = calculateTfIdf(invertedTree, "computer" , 141);
 
-	TfIdfList list_sun = calculateTfIdf(invertedTree, "sun" , 7); 
-
-	/** Your output in "sun_TfIdfList.txt" should be 
-	    same as the expected answer in "sun_TfIdfList_exp.txt"
+	/** Your output in "computer.txt" should be
+	    same as the expected answer in "computer_exp.txt"
 	*/
-	printTfIdfList("sun_TfIdfList.txt" , list_sun);
+	printTfIdfList("computer.txt" , list2);
 
 
-	TfIdfList list_moon = calculateTfIdf(invertedTree, "moon" , 7); 
-	printTfIdfList("moon_TfIdfList.txt" , list_moon );
-		
 	// ---------------------------------------------------------
 
 
 	/**  -----  The following will be available over the weekend -----
 	*/
 
-	char *words[] = { "nasa", "mars", "moon", NULL }; 
-	TfIdfList listM = retrieve(invertedTree, words , 7);
+	char *words[] = { "network", "computer",  NULL };
+	TfIdfList listM1 = retrieve(invertedTree, words , 141);
 
-	/** Your output in "nasa_mars_moon.txt" should be 
-	    same as the expected answer in "nasa_mars_moon.txt_exp.txt"
+	/** Your output in "network_computer.txt" should be
+	    same as the expected answer in "network_computer_exp.txt"
 	*/
-	printTfIdfList("nasa_mars_moon.txt" , listM);
+	printTfIdfList("network_computer.txt" , listM1);
 
 
+	char *words2[] = { "software", "security",  NULL };
+	TfIdfList listM2 = retrieve(invertedTree, words2 , 141);
 
-	/**  I am not providing a free function here, because that will expose some logic 
+	/** Your output in "software_security.txt" should be
+	    same as the expected answer in "software_security_exp.txt"
+	*/
+	printTfIdfList("software_security.txt" , listM2);
+
+	char *words3[] = { "database", NULL };
+	TfIdfList listM3 = retrieve(invertedTree, words3 , 141);
+
+	/** Your output in "database.txt.txt" should be
+	    same as the expected answer in "database_exp.txt"
+	*/
+	printTfIdfList("database.txt" , listM3);
+
+
+	/**  I am not providing a free function here, because that will expose some logic
 	     required for the assignment!
 
 		 You should implement a "free" function to free "invertedTree" and the related memory,
-		 and call it here. However, note that it is not part of the requirement and will not be marked. 
-		 If you don't free "invertedTree" here, all the memory associated with this process will be 
-		 reclaimed by the OS at the termination of this program. 
+		 and call it here. However, note that it is not part of the requirement and will not be marked.
+		 If you don't free "invertedTree" here, all the memory associated with this process will be
+		 reclaimed by the OS at the termination of this program.
 	*/
 
 	return 0;
 
 }
-
-
